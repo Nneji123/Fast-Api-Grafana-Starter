@@ -11,14 +11,13 @@ async def create_note(payload: NoteSchema):
     note_id = await crud.post(payload)
     created_date = dt.now().strftime("%Y-%m-%d %H:%M")
 
-    response_object = {
+    return {
         "id": note_id,
         "title": payload.title,
         "description": payload.description,
         "completed": payload.completed,
         "created_date": created_date,
     }
-    return response_object
     
 @router.get("/{id}/", response_model=NoteDB)
 async def read_note(id: int = Path(..., gt=0),):
@@ -37,13 +36,12 @@ async def update_note(payload:NoteSchema,id:int=Path(...,gt=0)): #Ensures the in
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
     note_id = await crud.put(id, payload)
-    response_object = {
+    return {
         "id": note_id,
         "title": payload.title,
         "description": payload.description,
         "completed": payload.completed,
     }
-    return response_object
 
 #DELETE route
 @router.delete("/{id}/", response_model=NoteDB)
